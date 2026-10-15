@@ -1,0 +1,35 @@
+<title>__TITLE__</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap">
+__SHARED_CSS__
+<style>
+/* A text page (contact, privacy, terms, security): one readable column centered on the page, under the same header and footer. */
+body { min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1 0 auto; }
+.doc { max-width: 76ch; margin-inline: auto; padding-block: 48px 88px; display: grid; gap: 14px; }
+.doc h1 { font-size: clamp(2rem, 1.3rem + 2.2vw, 3rem); margin-bottom: 4px; }
+.doc .updated { color: var(--ink-2); font-size: 0.95rem; margin-bottom: 18px; }
+.doc h2 { font-size: 1.35rem; margin-top: 26px; }
+.doc p, .doc li { font-size: 1.05rem; line-height: 1.6; }
+.doc ul { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+.doc a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.doc a:hover { color: var(--accent-2); }
+.doc .lead { background: var(--tint); border: 1px solid var(--rule); border-radius: 12px; padding: 16px 18px; margin-bottom: 8px; }
+.doc .lead p { margin: 0; }
+</style>
+
+<header>
+  <div class="nav">
+    <a href="index.html" aria-label="Opus Juris home"><img src="data:image/png;base64,__LOGO__" alt="Opus Juris"></a>
+    <a class="demo" href="demo.html">Request a demo</a>
+  </div>
+</header>
+
+<main>
+  <div class="edge">
+    <div class="doc">
+__CONTENT__
+    </div>
+  </div>
+</main>
+
+__FOOTER__

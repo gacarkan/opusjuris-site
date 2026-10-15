@@ -1,0 +1,7 @@
+# Built output: GitHub Actions rebuilds dist/ from the sources on every push.
+dist/
+# Images no page uses any more, kept locally for reference.
+unused/
+node_modules/
+Thumbs.db
+.DS_Store
