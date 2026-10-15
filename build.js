@@ -18,7 +18,7 @@ const YEAR = new Date().getFullYear();
 const FOOTER = `<div class="edge">
   <footer>
     <span>\u00a9 ${YEAR} ${ENTITY}. ${ADDRESS.join(", ")}.</span>
-    <nav aria-label="Site"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="security.html">Security</a><a href="accessibility.html">Accessibility</a><a href="mailto:hello@opusjuris.com">hello@opusjuris.com</a><a href="tel:+12019041020">+1 (201) 904-1020</a></nav>
+    <nav aria-label="Site"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="security.html">Security</a><a href="accessibility.html">Accessibility</a><a href="mailto:info@opusjuris.com">info@opusjuris.com</a><a href="tel:+12019041020">+1 (201) 904-1020</a></nav>
   </footer>
 </div>`;
 const page = fill(fs.readFileSync(path.join(here, "page.html"), "utf8")).replace("__FOOTER__", FOOTER);

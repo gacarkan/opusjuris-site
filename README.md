@@ -20,7 +20,7 @@ GitHub Pages, from the repository gacarkan/opusjuris-site, with the domain at Go
 - .github/workflows/pages.yml builds the site (node build.js) and publishes dist/ on every push to main. dist/ and unused/ are not committed.
 - build.js writes dist/CNAME (opusjuris.com) and dist/.nojekyll, and rewrites page links to clean addresses (/demo, /privacy; the home page is /) because GitHub Pages serves demo.html at /demo. The sources keep the file names.
 - DNS at GoDaddy: four A records for @ to 185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153, and a CNAME for www to gacarkan.github.io. The custom domain is set in the repository's Pages settings; Enforce HTTPS goes on once GitHub has issued the certificate.
-- The mailbox hello@opusjuris.com must exist (a GoDaddy mailbox or forwarding) before the site goes live; the demo form opens the visitor's mail app to it, or posts to a form service when data-endpoint is set in demo-page.html.
+- The mailbox info@opusjuris.com must exist (a GoDaddy mailbox or forwarding) before the site goes live; the demo form opens the visitor's mail app to it, or posts to a form service when data-endpoint is set in demo-page.html.
 
 Rules carried over from the application: no em or en dashes anywhere, no
 vendor names in the copy (the citation database, the library), nothing
@@ -30,6 +30,6 @@ invented as a statistic.
 ## Demo request page
 
 - Source: demo-page.html (shares the landing page stylesheet at build time). Built to dist/demo.html by node build.js. Every "Request a demo" link on the landing page points at demo.html.
-- Today the form has no form service: on submit it opens the visitor's mail app with the request pre-filled to hello@opusjuris.com (works on GitHub Pages with nothing to set up).
+- Today the form has no form service: on submit it opens the visitor's mail app with the request pre-filled to info@opusjuris.com (works on GitHub Pages with nothing to set up).
 - To receive requests without the mail app: create a form endpoint (for example a Formspree form, free tier) and put its URL in the form's data-endpoint attribute in demo-page.html; the page then posts the fields as JSON and shows the thank-you state. Rebuild and publish.
 - Fields: first name, last name, email, phone (optional), firm, firm size, where they file (optional).
