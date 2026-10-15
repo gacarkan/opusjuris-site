@@ -18,7 +18,7 @@ step beyond `node build.js`, which embeds the mark and writes `dist/`.
 GitHub Pages, from the repository gacarkan/opusjuris-site, with the domain at GoDaddy:
 
 - .github/workflows/pages.yml builds the site (node build.js) and publishes dist/ on every push to main. dist/ and unused/ are not committed.
-- build.js writes dist/CNAME (opusjuris.com) and dist/.nojekyll.
+- build.js writes dist/CNAME (opusjuris.com) and dist/.nojekyll, and rewrites page links to clean addresses (/demo, /privacy; the home page is /) because GitHub Pages serves demo.html at /demo. The sources keep the file names.
 - DNS at GoDaddy: four A records for @ to 185.199.108.153, 185.199.109.153, 185.199.110.153 and 185.199.111.153, and a CNAME for www to gacarkan.github.io. The custom domain is set in the repository's Pages settings; Enforce HTTPS goes on once GitHub has issued the certificate.
 - The mailbox hello@opusjuris.com must exist (a GoDaddy mailbox or forwarding) before the site goes live; the demo form opens the visitor's mail app to it, or posts to a form service when data-endpoint is set in demo-page.html.
 

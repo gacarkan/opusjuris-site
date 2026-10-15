@@ -35,8 +35,14 @@ fs.mkdirSync(path.join(here, "dist", "img"), { recursive: true });
 for (const f of fs.readdirSync(path.join(here, "img"))) fs.copyFileSync(path.join(here, "img", f), path.join(here, "dist", "img", f));
 // The embedded form (what the artifact wraps itself).
 fs.writeFileSync(path.join(here, "dist", "page.embedded.html"), page);
+// Hosted pages link to clean addresses: GitHub Pages serves demo.html at /demo,
+// so the links say /demo, and the home page is /. The sources keep the file
+// names so the embedded preview copy, which has no server, still works.
+const CLEAN = { "index.html": "/", "demo.html": "/demo", "privacy.html": "/privacy", "terms.html": "/terms", "security.html": "/security", "accessibility.html": "/accessibility" };
+const cleanLinks = (html) => html.replace(/href="([a-z]+\.html)"/g, (m, f) => (CLEAN[f] ? 'href="' + CLEAN[f] + '"' : m));
 // A full document for hosting: head parts first, then the rest in the body.
 const wrap = (src, description) => {
+  src = cleanLinks(src);
   const headEnd = src.indexOf("<header");
   const headPart = src.slice(0, headEnd);
   const bodyPart = src.slice(headEnd);
