@@ -61,7 +61,7 @@ ${bodyPart}
 </html>
 `;
 };
-const indexDoc = wrap(page, "AI powered court drafting software. Lawyer driven, AI assisted: court filings drafted from court-ready templates, every citation checked against a full law library.");
+const indexDoc = wrap(page, "AI powered court drafting software. Lawyer controlled, AI assisted: court filings drafted from court-ready templates, every citation checked against a full law library.");
 const demoDoc = wrap(demo, "Request a demo of Opus Juris: a walkthrough of the app on a real motion.");
 fs.writeFileSync(path.join(here, "dist", "index.html"), indexDoc);
 // GitHub Pages: the custom domain, and no Jekyll pass over the output.
