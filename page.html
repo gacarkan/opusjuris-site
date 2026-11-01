@@ -88,7 +88,8 @@ header { border-bottom: 1px solid var(--rule); background: var(--bg); position: 
 .calc-card h3 { font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
 .calc-field { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 16px; padding-block: 14px; border-top: 1px solid var(--rule); }
 .calc-field:first-of-type { border-top: 0; }
-.calc-field label { font-weight: 600; }
+.calc-field label, .calc-label { font-weight: 600; }
+.calc-fixed { grid-column: 2; grid-row: 1 / span 2; width: 7.5rem; text-align: right; padding: 10px 12px; font-weight: 700; color: var(--accent); }
 .calc-field .unit { grid-column: 1; color: var(--ink-2); font-size: 0.85rem; }
 .calc-field input { grid-column: 2; grid-row: 1 / span 2; width: 7.5rem; font: inherit; font-weight: 600; text-align: right; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
 .calc-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: 0 0 0 4px var(--ring); }
@@ -176,7 +177,7 @@ footer a:hover { color: var(--accent); }
     <div class="wrap">
       <div class="calc-head">
         <h2 id="calc-title">Get your hours back on drafting and discovery.</h2>
-        <p>Enter your firm's numbers. The estimate is the hours your team spends on drafting and discovery, times the share of that time you expect to save.</p>
+        <p>Enter your firm's numbers. The estimate is the hours your team spends on drafting, times the share of that time Opus Juris saves, plus the same for discovery.</p>
       </div>
       <div class="calc-grid">
         <div class="calc-card">
@@ -184,7 +185,8 @@ footer a:hover { color: var(--accent); }
           <div class="calc-field"><label for="c-atty">Attorneys drafting and handling discovery</label><span class="unit">attorneys</span><input id="c-atty" type="number" inputmode="decimal" min="0" max="1000" step="1" value="4"></div>
           <div class="calc-field"><label for="c-draft">Hours a week on drafting</label><span class="unit">per attorney</span><input id="c-draft" type="number" inputmode="decimal" min="0" max="40" step="1" value="10"></div>
           <div class="calc-field"><label for="c-disc">Hours a week on discovery</label><span class="unit">per attorney</span><input id="c-disc" type="number" inputmode="decimal" min="0" max="40" step="1" value="6"></div>
-          <div class="calc-field"><label for="c-rate">Time you expect to save</label><span class="unit">percent, your estimate</span><input id="c-rate" type="number" inputmode="decimal" min="0" max="100" step="1" value="45"></div>
+          <div class="calc-field"><span class="calc-label">Time saved on drafting</span><span class="unit">applied to your drafting hours</span><span class="calc-fixed">45%</span></div>
+          <div class="calc-field"><span class="calc-label">Time saved on discovery</span><span class="unit">applied to your discovery hours</span><span class="calc-fixed">30%</span></div>
         </div>
         <div class="calc-card" aria-live="polite">
           <h3>Hours reclaimed each year</h3>
@@ -215,7 +217,8 @@ __FOOTER__
 
 <script>
 (function () {
-  var ids = ["c-atty", "c-draft", "c-disc", "c-rate"];
+  var DRAFT_RATE = 0.45, DISC_RATE = 0.30;
+  var ids = ["c-atty", "c-draft", "c-disc"];
   var el = {};
   ids.forEach(function (id) { el[id] = document.getElementById(id); });
   function val(id, max) {
@@ -225,8 +228,8 @@ __FOOTER__
   }
   function n(x) { return Math.round(x).toLocaleString("en-US"); }
   function run() {
-    var atty = val("c-atty", 1000), draft = val("c-draft", 40), disc = val("c-disc", 40), rate = val("c-rate", 100) / 100;
-    var week = atty * (draft + disc) * rate;
+    var atty = val("c-atty", 1000), draft = val("c-draft", 40), disc = val("c-disc", 40);
+    var week = atty * (draft * DRAFT_RATE + disc * DISC_RATE);
     var year = week * 46;
     var share = atty > 0 ? Math.min(week / atty / 40, 1) : 0;
     document.getElementById("c-year").textContent = n(year);
