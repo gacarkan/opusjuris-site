@@ -78,6 +78,29 @@ header { border-bottom: 1px solid var(--rule); background: var(--bg); position: 
 .band-head h2 { font-size: clamp(1.7rem, 1.2rem + 1.4vw, 2.5rem); }
 .band-head p { color: var(--ink-2); font-size: 1.1rem; }
 
+/* The time savings calculator: the visitor's inputs on the left, the hours it gives back on the right. */
+.calc { padding-block: 40px 90px; }
+.calc-head { display: grid; gap: 12px; max-width: 60ch; margin-bottom: 32px; }
+.calc-head h2 { font-size: clamp(1.7rem, 1.2rem + 1.4vw, 2.5rem); }
+.calc-head p { color: var(--ink-2); font-size: 1.1rem; }
+.calc-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); }
+.calc-card { background: var(--panel); border: 1px solid var(--rule); border-radius: 18px; padding: clamp(22px, 3vw, 36px); }
+.calc-card h3 { font-size: 0.82rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 700; color: var(--accent); margin-bottom: 20px; }
+.calc-field { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 4px 16px; padding-block: 14px; border-top: 1px solid var(--rule); }
+.calc-field:first-of-type { border-top: 0; }
+.calc-field label { font-weight: 600; }
+.calc-field .unit { grid-column: 1; color: var(--ink-2); font-size: 0.85rem; }
+.calc-field input { grid-column: 2; grid-row: 1 / span 2; width: 7.5rem; font: inherit; font-weight: 600; text-align: right; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+.calc-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: 0 0 0 4px var(--ring); }
+.calc-big { font-size: clamp(2.6rem, 2rem + 3vw, 4.2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--accent); }
+.calc-big small { font-size: 0.35em; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-2); margin-left: 8px; }
+.calc-lead { color: var(--ink-2); margin-top: 10px; }
+.calc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); }
+.calc-stats strong { display: block; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.calc-stats span { color: var(--ink-2); font-size: 0.9rem; }
+.calc-note { margin-top: 20px; color: var(--ink-2); font-size: 0.85rem; }
+.calc-cta { margin-top: 22px; }
+
 .contact { background: var(--tint); border-top: 1px solid var(--rule); }
 /* The contact band and the footer run edge to edge like the header. */
 .edge { width: 100%; padding-inline: clamp(16px, 2.5vw, 40px); }
@@ -101,6 +124,8 @@ footer a:hover { color: var(--accent); }
   .hero { padding-block: 48px 28px; }
   .band { padding-block: 10px 56px; }
   .band-notes { grid-template-columns: 1fr; gap: 14px; }
+  .calc { padding-block: 24px 56px; }
+  .calc-grid { grid-template-columns: 1fr; }
 }
 </style>
 
@@ -116,7 +141,7 @@ footer a:hover { color: var(--accent); }
     <div class="hero">
       <p class="eyebrow">AI powered court drafting software</p>
       <h1>Lawyer Controlled, AI Assisted.</h1>
-      <p>Court filings drafted and checked in one place. Motions, memoranda and certifications from court-ready templates, every citation verified against a full law library.</p>
+      <p>Save hours on drafting and discovery. Motions, memoranda and certifications from court-ready templates, discovery requests and responses built in the same place, every citation verified against a full law library.</p>
       <a class="btn" href="demo.html">Request a demo</a>
     </div>
   </div>
@@ -147,10 +172,39 @@ footer a:hover { color: var(--accent); }
     </div>
   </div>
 
+  <section class="calc" id="calculator" aria-labelledby="calc-title">
+    <div class="wrap">
+      <div class="calc-head">
+        <h2 id="calc-title">Get your hours back on drafting and discovery.</h2>
+        <p>Enter your firm's numbers. The estimate is the hours your team spends on drafting and discovery, times the share of that time you expect to save.</p>
+      </div>
+      <div class="calc-grid">
+        <div class="calc-card">
+          <h3>Your firm</h3>
+          <div class="calc-field"><label for="c-atty">Attorneys drafting and handling discovery</label><span class="unit">attorneys</span><input id="c-atty" type="number" inputmode="decimal" min="0" max="1000" step="1" value="4"></div>
+          <div class="calc-field"><label for="c-draft">Hours a week on drafting</label><span class="unit">per attorney</span><input id="c-draft" type="number" inputmode="decimal" min="0" max="40" step="1" value="10"></div>
+          <div class="calc-field"><label for="c-disc">Hours a week on discovery</label><span class="unit">per attorney</span><input id="c-disc" type="number" inputmode="decimal" min="0" max="40" step="1" value="6"></div>
+          <div class="calc-field"><label for="c-rate">Time you expect to save</label><span class="unit">percent, your estimate</span><input id="c-rate" type="number" inputmode="decimal" min="0" max="100" step="1" value="45"></div>
+        </div>
+        <div class="calc-card" aria-live="polite">
+          <h3>Hours reclaimed each year</h3>
+          <div class="calc-big"><span id="c-year">0</span><small>HOURS</small></div>
+          <p class="calc-lead" id="c-lead"></p>
+          <div class="calc-stats">
+            <div><strong id="c-days">0</strong><span>working days back a year</span></div>
+            <div><strong id="c-pct">0%</strong><span>of each attorney's week</span></div>
+          </div>
+          <p class="calc-note">Estimates only, in hours rather than dollars. A year is 46 working weeks and a working day is 8 hours. Your results depend on the work you run through Opus Juris.</p>
+          <div class="calc-cta"><a class="btn" href="demo.html">Request a demo</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="contact" id="contact">
     <div class="edge">
       <h2>See it on a real motion.</h2>
-      <p>Built and used daily in a New Jersey practice. Licensed per firm, with setup and training.</p>
+      <p>Built and used daily in New York, New Jersey, Florida and federal practice. Licensed per firm, with setup and training.</p>
       <div class="mail"><a class="btn" href="demo.html">Request a demo</a><a class="addr" href="mailto:info@opusjuris.com">info@opusjuris.com</a><a class="addr" href="tel:+15513510500">+1 (551) 351-0500</a></div>
     </div>
   </div>
@@ -158,3 +212,29 @@ footer a:hover { color: var(--accent); }
 </main>
 
 __FOOTER__
+
+<script>
+(function () {
+  var ids = ["c-atty", "c-draft", "c-disc", "c-rate"];
+  var el = {};
+  ids.forEach(function (id) { el[id] = document.getElementById(id); });
+  function val(id, max) {
+    var v = parseFloat(el[id].value);
+    if (!isFinite(v) || v < 0) v = 0;
+    return Math.min(v, max);
+  }
+  function n(x) { return Math.round(x).toLocaleString("en-US"); }
+  function run() {
+    var atty = val("c-atty", 1000), draft = val("c-draft", 40), disc = val("c-disc", 40), rate = val("c-rate", 100) / 100;
+    var week = atty * (draft + disc) * rate;
+    var year = week * 46;
+    var share = atty > 0 ? Math.min(week / atty / 40, 1) : 0;
+    document.getElementById("c-year").textContent = n(year);
+    document.getElementById("c-days").textContent = n(year / 8);
+    document.getElementById("c-pct").textContent = Math.round(share * 100) + "%";
+    document.getElementById("c-lead").textContent = "That is " + n(week) + " hours a week back across your team.";
+  }
+  ids.forEach(function (id) { el[id].addEventListener("input", run); });
+  run();
+})();
+</script>
