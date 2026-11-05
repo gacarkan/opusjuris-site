@@ -97,11 +97,11 @@ header { border-bottom: 1px solid var(--rule); background: var(--bg); position: 
 .calc-field .unit { grid-column: 1; color: var(--ink-2); font-size: 0.85rem; }
 .calc-field input { grid-column: 2; grid-row: 1 / span 2; width: 4.5rem; font: inherit; font-weight: 600; text-align: right; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
 .calc-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: 0 0 0 4px var(--ring); }
-.calc-big { font-size: clamp(2.6rem, 2rem + 3vw, 4.2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--accent); }
+.calc-big { font-size: clamp(2.6rem, 2rem + 3vw, 4.2rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
 .calc-big small { font-size: 0.35em; font-weight: 600; letter-spacing: 0.04em; color: var(--ink-2); margin-left: 8px; }
 .calc-lead { color: var(--ink-2); margin-top: 10px; }
 .calc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--rule); }
-.calc-stats strong { display: block; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.calc-stats strong { display: block; font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .calc-stats span { color: var(--ink-2); font-size: 0.9rem; }
 .calc-note { margin-top: 20px; color: var(--ink-2); font-size: 0.85rem; }
 .calc-cta { margin-top: 22px; }
@@ -195,7 +195,7 @@ footer a:hover { color: var(--accent); }
         <div class="calc-card" aria-live="polite">
           <h3>Hours reclaimed each year</h3>
           <div class="calc-big"><span id="c-year">0</span><small>HOURS</small></div>
-          <p class="calc-lead" id="c-lead"></p>
+          <p class="calc-lead" id="c-week"></p>
           <div class="calc-stats">
             <div><strong id="c-days">0</strong><span>working days back a year</span></div>
             <div><strong id="c-pct">0%</strong><span>of each attorney's week</span></div>
@@ -231,15 +231,35 @@ __FOOTER__
     return Math.min(v, max);
   }
   function n(x) { return Math.round(x).toLocaleString("en-US"); }
+  // The results roll from the old figure to the new one instead of snapping,
+  // so a changed input is felt as a change. Each shown figure keeps its own
+  // tween; a new target mid-roll starts from wherever the roll is.
+  var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var shown = {}, frames = {};
+  function roll(id, target, fmt) {
+    var node = document.getElementById(id);
+    var from = shown[id] == null ? target : shown[id];
+    if (still || from === target) { shown[id] = target; node.textContent = fmt(target); return; }
+    if (frames[id]) cancelAnimationFrame(frames[id]);
+    var t0 = null, span = 420;
+    function step(ts) {
+      if (t0 === null) t0 = ts;
+      var p = Math.min((ts - t0) / span, 1), e = 1 - Math.pow(1 - p, 3);
+      shown[id] = from + (target - from) * e;
+      node.textContent = fmt(shown[id]);
+      if (p < 1) frames[id] = requestAnimationFrame(step); else { frames[id] = null; shown[id] = target; node.textContent = fmt(target); }
+    }
+    frames[id] = requestAnimationFrame(step);
+  }
   function run() {
     var atty = val("c-atty", 1000), draft = val("c-draft", 40), disc = val("c-disc", 40);
     var week = atty * (draft * DRAFT_RATE + disc * DISC_RATE);
     var year = week * 46;
     var share = atty > 0 ? Math.min(week / atty / 40, 1) : 0;
-    document.getElementById("c-year").textContent = n(year);
-    document.getElementById("c-days").textContent = n(year / 8);
-    document.getElementById("c-pct").textContent = Math.round(share * 100) + "%";
-    document.getElementById("c-lead").textContent = "That is " + n(week) + " hours a week back across your team.";
+    roll("c-year", year, n);
+    roll("c-days", year / 8, n);
+    roll("c-pct", share * 100, function (x) { return Math.round(x) + "%"; });
+    roll("c-week", week, function (x) { return "That is " + n(x) + " hours a week back across your team."; });
   }
   ids.forEach(function (id) { el[id].addEventListener("input", run); });
   run();
